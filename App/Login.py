@@ -6,7 +6,8 @@ from yaml.loader import SafeLoader
 
 def login():
     # Define the correct path for config.yaml
-    config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
+    config_path = 'App\config.yaml'
+
 
     # Check if the file exists before opening
     if not os.path.exists(config_path):
@@ -15,6 +16,7 @@ def login():
 
     with open(config_path) as file:
         config = yaml.load(file, Loader=SafeLoader)
+
 
     authenticator = stauth.Authenticate(
         config['credentials'],
@@ -32,10 +34,14 @@ def login():
     elif st.session_state['authentication_status'] is None:
         st.warning('Please enter your username and password')
 
+    st.title("Login")
+
+
     try:
         authenticator.login()
     except Exception as e:
         st.error(e)
+
 
     if st.session_state.get('authentication_status'):
         authenticator.logout()
