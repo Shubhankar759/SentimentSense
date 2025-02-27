@@ -4,6 +4,8 @@ from Home import fileuploader
 from signup import signup
 from forgot_password import forgot_password
 from forgot_username import forgot_username
+from Home import fileuploader
+
 
 login()
 
