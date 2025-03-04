@@ -19,7 +19,7 @@ def options_on_login():
 
 def login():
     # Define the correct path for config.yaml
-    config_path = 'App\config.yaml'
+    config_path = 'config.yaml'
 
 
     # Check if the file exists before opening
@@ -38,16 +38,6 @@ def login():
         config['cookie']['expiry_days']
     )
 
-    if st.session_state['authentication_status']:
-        authenticator.logout()
-        st.write(f'Welcome *{st.session_state["name"]}*')
-        st.title('Hello')
-    elif st.session_state['authentication_status'] is False:
-        st.error('Username/password is incorrect')
-    elif st.session_state['authentication_status'] is None:
-        st.warning('Please enter your username and password')
-
-    st.title("Login")
 
 
     try:

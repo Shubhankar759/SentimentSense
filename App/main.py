@@ -7,12 +7,6 @@ from forgot_username import forgot_username
 from Home import fileuploader
 
 
-login()
-
-    
-
-
-
 if "page" not in st.session_state:
     st.session_state["page"] = "login"
 
