@@ -4,6 +4,20 @@ import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 
+def Options_login():
+    col1, col2, col3 = st.columns([1, 1, 1])
+    with col1:
+        if st.button("Sign Up"):
+            st.session_state["page"] = "signup"
+    with col2:
+        if st.button("Forgot Password?"):
+            st.session_state["page"] = "forgot_password"
+    with col3:
+        if st.button("Forgot Username?"):
+            st.session_state["page"] = "forgot_username"
+
+
+
 def login():
     # Define the correct path for config.yaml
     config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
@@ -31,21 +45,17 @@ def login():
     except Exception as e:
         st.error(e)
 
+
+    
+
     if st.session_state.get('authentication_status'):
         authenticator.logout()
         st.write(f'Welcome *{st.session_state["name"]}*')
     elif st.session_state.get('authentication_status') is False:
         st.error('Username/password is incorrect')
+        Options_login()
     elif st.session_state.get('authentication_status') is None:
         st.warning('Please enter your username and password')
+        Options_login()
 
-    col1, col2, col3 = st.columns([1, 1, 1])
-    with col1:
-        if st.button("Sign Up"):
-            st.session_state["page"] = "signup"
-    with col2:
-        if st.button("Forgot Password?"):
-            st.session_state["page"] = "forgot_password"
-    with col3:
-        if st.button("Forgot Username?"):
-            st.session_state["page"] = "forgot_username"
+    
