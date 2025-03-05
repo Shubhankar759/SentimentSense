@@ -6,7 +6,7 @@ def forgot_username():
     email = st.text_input("Enter your registered email")
 
     if st.button("Retrieve Username"):
-        st.success("Your username has been sent to your email!")
+        st.success("Your username has been sent to your email! (Demo Mode)")
 
     if st.button("Back to Login"):
         st.session_state["page"] = "login"

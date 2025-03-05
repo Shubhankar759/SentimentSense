@@ -8,7 +8,7 @@ def signup():
     new_password = st.text_input("Choose a Password", type="password")
 
     if st.button("Register"):
-        st.success("Account created successfully!")
+        st.success("Account created successfully! (This is a demo, user is not stored)")
         st.session_state["page"] = "login"
 
     if st.button("Back to Login"):
