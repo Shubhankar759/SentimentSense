@@ -6,7 +6,7 @@ def forgot_password():
     email = st.text_input("Enter your registered email")
 
     if st.button("Reset Password"):
-        st.success("A password reset link has been sent to your email!")
+        st.success("A password reset link has been sent to your email! (Demo Mode)")
 
     if st.button("Back to Login"):
         st.session_state["page"] = "login"

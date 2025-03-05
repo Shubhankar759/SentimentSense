@@ -1,8 +1,8 @@
 import os
 import streamlit as st
-import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
+
 
 def Options_login():
     col1, col2, col3 = st.columns([1, 1, 1])
@@ -17,45 +17,31 @@ def Options_login():
             st.session_state["page"] = "forgot_username"
 
 
-
 def login():
-    # Define the correct path for config.yaml
     config_path = os.path.join(os.path.dirname(__file__), "config.yaml")
 
-    # Check if the file exists before opening
     if not os.path.exists(config_path):
-        st.error(f"Config file not found: {config_path}")
+        st.error("Config file not found. Please check the path.")
         return
 
+    # Load credentials from config.yaml
     with open(config_path) as file:
         config = yaml.load(file, Loader=SafeLoader)
 
-
-    authenticator = stauth.Authenticate(
-        config['credentials'],
-        config['cookie']['name'],
-        config['cookie']['key'],
-        config['cookie']['expiry_days']
-    )
-
     st.title("Login")
 
-    try:
-        authenticator.login()
-    except Exception as e:
-        st.error(e)
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
 
+    if st.button("Login"):
+        # Verify credentials manually (Plain-Text)
+        if username in config["credentials"]["usernames"] and password == config["credentials"]["usernames"][username][
+            "password"]:
+            st.session_state["page"] = "Home"
+            st.session_state["name"] = config["credentials"]["usernames"][username]["first_name"]
+            st.session_state["username"] = username
+            st.rerun()
+        else:
+            st.error("Incorrect username or password")
 
-    
-
-    if st.session_state.get('authentication_status'):
-        authenticator.logout()
-        st.write(f'Welcome *{st.session_state["name"]}*')
-    elif st.session_state.get('authentication_status') is False:
-        st.error('Username/password is incorrect')
-        Options_login()
-    elif st.session_state.get('authentication_status') is None:
-        st.warning('Please enter your username and password')
-        Options_login()
-
-    
+    Options_login()
