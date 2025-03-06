@@ -1,3 +1,6 @@
 venv/
 .idea/
 __pycache__/
+.evn
+App/.env
+final_predictions.csv
