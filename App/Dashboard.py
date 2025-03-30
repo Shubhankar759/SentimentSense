@@ -69,6 +69,9 @@ def graphs(final):
 
 
 def Dashboard(data):
+    
+    
+
     data=data.iloc[:100, :4]
     file_path = Path("final_predictions.csv")
     
@@ -121,10 +124,11 @@ def Dashboard(data):
 
     
 st.set_page_config(
-    page_title="US Population Dashboard",
+    page_title="Comment Analysis",
     page_icon="🏂",
     layout="wide",
     initial_sidebar_state="expanded")
+
 
 
 

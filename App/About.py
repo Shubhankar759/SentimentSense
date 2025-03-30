@@ -7,4 +7,4 @@ def about_us():
     st.write("Created  By :- Anubhav Singh, Nishant Kalane, Sahil Nagpure, Shubhankar Warkade")
     # Back to Home Button
     if st.button("Back to Home"):
-        st.session_state["page"] = "Home"
+        st.session_state.Main = "Home"
