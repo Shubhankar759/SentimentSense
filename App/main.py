@@ -1,14 +1,28 @@
 import streamlit as st
-from Home import home
+from Home import home 
 from About import about_us
 from Authetication import AuthenticationSystem , StreamlitAuthUI
-
+from Dashboard import Enter_Dashboard
+import os
+from pathlib import Path
+import pandas as pd
 
 def Inapp(): 
     if st.session_state.Main == "Home":
         home()
     elif st.session_state.Main == "About":
         about_us()
+    elif st.session_state.Main == "Dashboard":
+        file_path = Path("comments.csv")
+        if file_path.is_file():
+            data= pd.read_csv(file_path) 
+            Enter_Dashboard(data)
+        else:
+            st.error("File not found")
+        
+        
+       
+    
 
 
 # Initialize session state if not set

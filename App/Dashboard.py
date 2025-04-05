@@ -46,8 +46,8 @@ def clean_text(text):
 def graphs(final):
     label_counts = final['predicte'].value_counts().reset_index()
     label_counts.columns = ['label', 'count']
-    final['body']=str(final['body'])
-    text = " ".join(final['body'])
+    final['comments']=str(final['comments'])
+    text = " ".join(final['comments'])
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(text)
 
     # Create a pie chart with Altair
@@ -69,32 +69,29 @@ def graphs(final):
 
 
 def Dashboard(data):
-    
-    
-
-    data=data.iloc[:100, :4]
     file_path = Path("final_predictions.csv")
     
     
-    comments = data['body']
+    comments = data['comments']
     cleaned = []
     for text in comments:
         text=str(text)
         cleaned.append(clean_text(text))
 
-    data['body'] = cleaned
+    data['comments'] = cleaned
 
-    data.head()
+    # st.dataframe(data)
+   
     
     data['predicte'] = ''
     
-    json_data = data[['body','predicte']].to_json(orient='records')
+    json_data = data[['comments','predicte']].to_json(orient='records')
     
     prompt =f"""
     Your are an expert liguist , who have good understanding of sentiments and understand sarcasm you are good at classifying social media comments into sarcastic and non-sarcastic labels.
     help me classify the comments into: sarcastic (label=1) and non-sarcastic(label=0) labels.
-    data is given in json file which consist of two attributes body , predicte.
-    'body' is the main comment to be analysied
+    data is given in json file which consist of two attributes'comments , predicte.
+    'comments' is the main comment to be analysied
     'predicte' is to be labelled as sarcastic or non-sarcastic
     your task is to update predicted lables under 'predicte' in json code
     dont make any changes to json code format, please.
@@ -123,18 +120,24 @@ def Dashboard(data):
 
 
     
-st.set_page_config(
-    page_title="Comment Analysis",
-    page_icon="🏂",
-    layout="wide",
-    initial_sidebar_state="expanded")
 
 
 
 
     
-if st.button("Click Me"):
-    data = pd.read_csv("C:/Users/shubh/Downloads/archive/Comments_reddit.csv")  
+def Enter_Dashboard(data):
+    
+    st.set_page_config(
+    page_title="Comment Analysis",
+    page_icon="🏂",
+    layout="wide",
+    initial_sidebar_state="expanded"
+    )
+    if st.button("Back to Home"):
+        st.session_state.Main = "Home"
+        
+   
+    
     Dashboard(data)
     
 

@@ -5,3 +5,4 @@ __pycache__/
 App/.env
 final_predictions.csv
 *.db
+*.csv
