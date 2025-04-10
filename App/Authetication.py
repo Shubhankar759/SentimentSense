@@ -356,7 +356,7 @@ class StreamlitAuthUI:
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
         
-        col1, col2 = st.columns(2)
+        col1, col3, col2 = st.columns([1, 5, 1])
         
         with col1:
             if st.button("Login"):

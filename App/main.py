@@ -9,10 +9,30 @@ import pandas as pd
 
 def Inapp(): 
     if st.session_state.Main == "Home":
+        st.set_page_config(
+            page_title="Home",
+            page_icon="SentimentSense.svg",
+            layout="centered",
+            initial_sidebar_state="expanded"
+        )
         home()
     elif st.session_state.Main == "About":
+        st.set_page_config(
+            page_title="Home",
+            page_icon="SentimentSense.svg",
+            layout="centered",
+            initial_sidebar_state="expanded"
+        )
         about_us()
+        
     elif st.session_state.Main == "Dashboard":
+        st.set_page_config(
+            page_title="Home",
+            page_icon="SentimentSense.svg",
+            layout="wide",
+            initial_sidebar_state="expanded"
+        )
+
         file_path = Path("comments.csv")
         if file_path.is_file():
             data= pd.read_csv(file_path) 
@@ -50,7 +70,19 @@ else:
     if token and st.session_state.page == "login":
         auth_ui.reset_password_page(token)
     elif st.session_state.page == "signup":
+        st.set_page_config(
+            page_title="Home",
+            page_icon="SentimentSense.svg",
+            layout="centered",
+            initial_sidebar_state="expanded"
+        )
         auth_ui.signup_page() 
     else:
+        st.set_page_config(
+            page_title="Home",
+            page_icon="SentimentSense.svg",
+            layout="centered",
+            initial_sidebar_state="expanded"
+        )
         auth_ui.login_page()
 
