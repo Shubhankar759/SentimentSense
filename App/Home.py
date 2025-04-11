@@ -20,16 +20,15 @@ def reddit_comment_extractor(post_url,sort=None,limit=50):
 
     json_data = response.json()
 
-    dataset.extend(child['data']['body'] for child in json_data[1]['data']['children'] if 'body' in child['data'])
+    dataset.extend(child['data']['body'].replace(',', '').replace('.', '')
+                   for child in json_data[1]['data']['children'] 
+                   if 'body' in child['data'])
 
     return pd.DataFrame(dataset, columns=['comments'])
 
 
 
 def home():
-    
-    
-
     logo , mids , abt = st.columns([1, 5, 1]) 
     
     with abt:
@@ -78,23 +77,11 @@ def home():
 
         if st.button("Get Comments & Start Analysis"):
             if option =='Reddit': 
-                if df.empty: st.error("Insert URL of Post")
+                
                 df = reddit_comment_extractor(user_input)
                 df.to_csv("comments.csv", index=False)
+                if df.empty: st.error("Insert URL of Post")
             
             st.session_state.Main = "Dashboard"  
-        
-        
-
-        
-
-       
-        
-
-    
-    # Button to navigate to About Us
-   
-    # if st.button("About Us"):
-    #     st.session_state["page"] = "About"
     
 
