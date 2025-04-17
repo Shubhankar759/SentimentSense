@@ -84,44 +84,30 @@ def drop_long_sentences(text):
         return None # Replace with None to indicate cell removal
     return text
 
-# def graphs(final):
-    
-#     Field= st.selectbox(
-#    'Which Field you want to display',
-#     final.columns[1:])
-#     # if Field in [sarcastic,ironic ,formal,toxic]:
-#     #     tags=[0,1]
-#     # elif Field == 'Contextual':
-#     #     tags=[0,1,2,3,4,5,6,7]
-#     # else Field == 'nature':
-#     #     tags=[]
-#     # pie_data = []
-    
-#     colors = ["#66c2a5","#fc8d62","#8da0cb","#e78ac3","#a6d854","#ffd92f","#e5c494","#b3b3b3",]  
-
-#     # # Iterate through each column except 'comments'
-#     # for col in final.columns:
-#     #     if col != 'comments':
-#     #         # Append the value counts of each column to the list
-#     #         pie_data.append(final[col].value_counts())
 
 
-#     # # Create subplots for each column
-#     fig, ax = plt.subplots(figsize=(15, 6))
-#     ax.pie(final[Field].value_counts(), labels=final[Field].value_counts().index,colors=colors,autopct='%1.1f%%', startangle=140)
-#     ax.axis('equal')
-#     plt.title(Field)
-#     st.pyplot(fig)
-    
+def parse_large_json_to_csv(json_string):
+    try:
+        # Try loading the entire JSON as a list of objects
+        data = json.loads(json_string)
 
-#     # for i, data in enumerate(pie_data):
-#     #     # Plot the pie chart for the current column
-#     #     axes[i].pie(data, labels=data.index, autopct='%1.1f%%', startangle=90)
-#     #     axes[i].set_title(final.columns[i+1])  # set title for each chart (+1 to skip comments)
+        if not isinstance(data, list):
+            raise ValueError("Top-level JSON is not a list. Trying NDJSON parsing...")
 
-#     # # Adjust layout and display the plot
-#     # plt.tight_layout()
-#     # plt.show()
+    except json.JSONDecodeError:
+        print("Standard JSON failed. Trying NDJSON (newline-delimited)...")
+        # Try treating it as newline-delimited JSON
+        data = []
+        for line in json_string.strip().splitlines():
+            if line.strip():
+                try:
+                    data.append(json.loads(line))
+                except json.JSONDecodeError as e:
+                    print(f"Failed to decode line: {line[:50]}... | Error: {e}")
+
+    # Convert list of dicts to DataFrame
+    df = pd.DataFrame(data)
+    return df
 
 
 
@@ -130,7 +116,6 @@ def graph(df):
 
     # Title
     st.title("SentimentSense Analysis")
-
     # Sidebar with attribute selection
 
     with st.sidebar:
@@ -151,12 +136,12 @@ def graph(df):
             with st.spinner("Analyzing..."):
                 
                 
-                prompt=f"""
+                analysis=f"""
                 text:{quick_text}
                 give me a sentiment analysis of give text and confidence between 0.0 and 1.0 on the basis of attribute
                 'sarcastic','positive','funny','ironic','sensible','toxic' in json file only the value with respective attribute
                 """
-                quick_result = model.generate_content(prompt)
+                quick_result = model.generate_content(analysis)
                 scores = json.loads(quick_result.text.replace('json','').replace("`",'').replace('\n',''))
 
                 st.title("Text Trait Analysis")
@@ -165,10 +150,7 @@ def graph(df):
                 for trait, value in scores.items():
                     st.subheader(trait.capitalize())
                     st.progress(value)
-
-
-
-    # Main content
+     # Main content
     if not selected_attributes:
         st.warning("Please select at least one attribute to analyze.")
     else:
@@ -597,10 +579,10 @@ def DataGeneration(data):
     
 
     # only for testing purpose
-    # file_path = 'final_predictions.csv'
-    # if True:
-    #     final = pd.read_csv('final_predictions.csv')
-    #     return final
+    file_path = 'final_predictions.csv'
+    if True:
+        final = pd.read_csv('final_predictions.csv')
+        return final
 
     
     comments = data['comments']
@@ -636,9 +618,10 @@ def DataGeneration(data):
     json_data = response.text.replace('`','')
     json_data = json_data.replace('\n','')
     json_data = json_data.replace('json','')
-    data_p = json.loads(json_data[:700])
-    final = pd.DataFrame(data_p)
+    data_p = json.loads(json_data)
+    final = pd.dataframe(data_p)
     return final
+    
 
 
 
@@ -647,11 +630,14 @@ def DataGeneration(data):
 
 def Enter_Dashboard(data):
     
-    if st.button("Return Home"):
-        st.session_state.Main = "Home"   
+    ret ,_, ref = st.columns([1,10,1])
     
-    if st.button("Refresh"):
-        st.rerun()
+    with ret:
+        if st.button("Return Home"):
+            st.session_state.Main = "Home"   
+    with ref:
+        if st.button("Refresh"):
+            st.rerun()
     
     df = DataGeneration(data)
     

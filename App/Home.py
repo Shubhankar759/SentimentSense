@@ -20,7 +20,7 @@ def reddit_comment_extractor(post_url,sort=None,limit=50):
 
     json_data = response.json()
 
-    dataset.extend(child['data']['body'].replace(',', '').replace('.', '')
+    dataset.extend(child['data']['body'].replace(',', '').replace('.', '').replace('|','').replace(";", "")
                    for child in json_data[1]['data']['children'] 
                    if 'body' in child['data'])
 
