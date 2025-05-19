@@ -17,9 +17,9 @@ from io import StringIO
 from collections import Counter
 import plotly.express as px
 import plotly.graph_objects as go
-# from sklearn.feature_extraction.text import CountVectorizer
-# from sklearn.decomposition import PCA
-# from sklearn.cluster import KMeans
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
 import nltk
 from nltk.corpus import stopwords
 import re
