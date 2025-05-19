@@ -15,9 +15,6 @@ from wordcloud import WordCloud
 import requests
 from io import StringIO
 from collections import Counter
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.decomposition import PCA
-from sklearn.cluster import KMeans
 import nltk
 from nltk.corpus import stopwords
 import re
