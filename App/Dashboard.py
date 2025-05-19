@@ -31,7 +31,8 @@ load_dotenv()
 GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
 genai.configure(api_key=GOOGLE_API_KEY)
 
-model = genai.GenerativeModel('gemini-1.5-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')
+
 
 try:
     nltk.data.find('corpora/stopwords')
@@ -578,11 +579,11 @@ def graph(df):
 def DataGeneration(data):
     
 
-    # only for testing purpose
-    file_path = 'final_predictions.csv'
-    if True:
-        final = pd.read_csv('final_predictions.csv')
-        return final
+    # # only for testing purpose
+    # file_path = 'final_predictions.csv'
+    # if True:
+    #     final = pd.read_csv('final_predictions.csv')
+    #     return final
 
     
     comments = data['comments']
@@ -619,7 +620,7 @@ def DataGeneration(data):
     json_data = json_data.replace('\n','')
     json_data = json_data.replace('json','')
     data_p = json.loads(json_data)
-    final = pd.dataframe(data_p)
+    final = pd.DataFrame(data_p)
     return final
     
 
@@ -638,8 +639,13 @@ def Enter_Dashboard(data):
     with ref:
         if st.button("Refresh"):
             st.rerun()
+    lock = None
+    if lock is None:
+        lock = 0
     
-    df = DataGeneration(data)
+    if lock == 0:
+        df = DataGeneration(data)
+        lock =1
     
     graph(df)
     
