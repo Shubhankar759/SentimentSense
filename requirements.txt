@@ -10,3 +10,4 @@ wordcloud
 requests
 nltk
 seaborn
+plotly
