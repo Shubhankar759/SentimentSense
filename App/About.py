@@ -9,4 +9,4 @@ def about_us():
     st.write('Government College of Engineering Nagpur,Maharastra,India')
     # Back to Home Button
     if st.button("Back to Home"):
-        st.session_state["page"] = "Home"
+        st.session_state.Main = "Home"

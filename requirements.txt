@@ -1,2 +1,10 @@
 streamlit
 streamlit_authenticator
+pandas 
+google-generativeai 
+pathlib  
+ipython 
+matplotlib
+python-dotenv
+wordcloud
+httpx
