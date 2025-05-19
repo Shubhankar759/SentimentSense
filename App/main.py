@@ -7,7 +7,7 @@ import os
 from pathlib import Path
 import pandas as pd
 
-FILE_ID = "1XLZzxlxSd4_WWcmmybGdvqMpAWWC1R2U"
+FILE_ID = "1ZxnDQMlp1LeVndGDh2aVFG3KiTloH4L7"
 favicon_url = f"https://drive.google.com/uc?export=view&id={FILE_ID}"
 
 def Inapp(): 
