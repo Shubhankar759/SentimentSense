@@ -378,14 +378,14 @@ class StreamlitAuthUI:
                 st.session_state.page = "signup"
                 st.rerun()
         
-        with st.expander("Forgot your credentials?"):
-            tab1, tab2 = st.tabs(["Forgot Password", "Forgot Username"])
+        # with st.expander("Forgot your credentials?"):
+        #     tab1, tab2 = st.tabs(["Forgot Password", "Forgot Username"])
             
-            with tab1:
-                self.forgot_password_form()
+        #     with tab1:
+        #         self.forgot_password_form()
             
-            with tab2:
-                self.forgot_username_form()
+        #     with tab2:
+        #         self.forgot_username_form()
     
     def signup_page(self):
         """Display the sign up form."""
