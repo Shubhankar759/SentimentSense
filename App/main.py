@@ -7,11 +7,14 @@ import os
 from pathlib import Path
 import pandas as pd
 
+FILE_ID = "1XLZzxlxSd4_WWcmmybGdvqMpAWWC1R2U"
+favicon_url = f"https://drive.google.com/uc?export=view&id={FILE_ID}"
+
 def Inapp(): 
     if st.session_state.Main == "Home":
         st.set_page_config(
             page_title="Home",
-            page_icon="SentimentSense.svg",
+            page_icon=favicon_url,
             layout="centered",
             initial_sidebar_state="expanded"
         )
@@ -19,7 +22,7 @@ def Inapp():
     elif st.session_state.Main == "About":
         st.set_page_config(
             page_title="Home",
-            page_icon="SentimentSense.svg",
+            page_icon=favicon_url,
             layout="centered",
             initial_sidebar_state="expanded"
         )
@@ -28,7 +31,7 @@ def Inapp():
     elif st.session_state.Main == "Dashboard":
         st.set_page_config(
             page_title="Home",
-            page_icon="SentimentSense.svg",
+            page_icon=favicon_url,
             layout="wide",
             initial_sidebar_state="expanded"
         )
@@ -72,7 +75,7 @@ else:
     elif st.session_state.page == "signup":
         st.set_page_config(
             page_title="Home",
-            page_icon="SentimentSense.svg",
+            page_icon=favicon_url,
             layout="centered",
             initial_sidebar_state="expanded"
         )
@@ -80,7 +83,7 @@ else:
     else:
         st.set_page_config(
             page_title="Home",
-            page_icon="SentimentSense.svg",
+            page_icon=favicon_url,
             layout="centered",
             initial_sidebar_state="expanded"
         )
