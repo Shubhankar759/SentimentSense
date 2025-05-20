@@ -12,3 +12,4 @@ nltk
 seaborn
 plotly
 scikit-learn
+networkx
