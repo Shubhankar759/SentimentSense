@@ -14,7 +14,7 @@ import altair as alt
 from wordcloud import WordCloud
 import requests
 from io import StringIO
-from collections import Counter,defaultdict
+from collections import Counter
 import plotly.express as px
 import plotly.graph_objects as go
 from sklearn.feature_extraction.text import CountVectorizer
@@ -24,8 +24,6 @@ import nltk
 from nltk.corpus import stopwords
 import re
 import seaborn as sns
-import networkx as nx
-from itertools import combinations
 
 
 load_dotenv()
@@ -291,26 +289,26 @@ def graph(df):
 
         # Bar charts for attribute counts
 
-    for attr in selected_attributes:
-        st.write(f"### {attr} Value Counts")
+        for attr in selected_attributes:
+            st.write(f"### {attr} Value Counts")
+            
+            st.write(df[attr].value_counts())
 
-        st.write(df[attr].value_counts())
+            # Count values
+            value_counts = df[attr][df[attr].isin([0, 1])].value_counts().sort_index()
 
-        # Get value counts for all values (removed the filtering)
-        value_counts = df[attr].value_counts().sort_index()
+            # Create bar chart
+            fig, ax = plt.subplots(figsize=(10, 6))
+            sns.barplot(x=value_counts.index, y=value_counts.values, ax=ax)
+            ax.set_title(f"{attr} Value Counts")
+            ax.set_xlabel("Value")
+            ax.set_ylabel("Count")
 
-        # Create bar chart
-        fig, ax = plt.subplots(figsize=(10, 6))
-        sns.barplot(x=value_counts.index, y=value_counts.values, ax=ax)
-        ax.set_title(f"{attr} Value Counts")
-        ax.set_xlabel("Value")
-        ax.set_ylabel("Count")
+            # Rotate x-axis labels if there are many values
+            if len(value_counts) > 5:
+                plt.xticks(rotation=45)
 
-        # Rotate x-axis labels if there are many values
-        if len(value_counts) > 5:
-            plt.xticks(rotation=45)
-
-        st.pyplot(fig)
+            st.pyplot(fig)
 
         # Pairwise relationships
         if len(selected_attributes) >= 2:
@@ -344,24 +342,28 @@ def graph(df):
 
             st.pyplot(fig)
 
-    # NEW VISUALIZATIONS
-    # 1. Interactive Sunburst Chart
-    st.header("Interactive Sunburst Chart")
-    if len(selected_attributes) >= 2:
-        # Select the first two attributes for the sunburst
-        attr1, attr2 = selected_attributes[:2]
-        # Count combinations
-        sunburst_data = df.groupby([attr1, attr2]).size().reset_index(name='count')
-        # Create sunburst chart
-        fig = px.sunburst(
-            sunburst_data, 
-            path=[attr1, attr2], 
-            values='count',
-            title=f'Sunburst Chart of {attr1} and {attr2}'
-        )
-        st.plotly_chart(fig, use_container_width=True)
-    else:
-        st.write("Select at least two attributes to display the sunburst chart.")
+        # NEW VISUALIZATIONS
+
+        # 1. Interactive Sunburst Chart
+        st.header("Interactive Sunburst Chart")
+
+        if len(selected_attributes) >= 2:
+            # Select the first two attributes for the sunburst
+            attr1, attr2 = selected_attributes[:2]
+
+            # Count combinations
+            sunburst_data = df.groupby([attr1, attr2]).size().reset_index(name='count')
+
+            # Create sunburst chart
+            fig = px.sunburst(
+                sunburst_data, 
+                path=[attr1, attr2], 
+                values='count',
+                title=f'Sunburst Chart of {attr1} and {attr2}'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.write("Select at least two attributes to display the sunburst chart.")
 
         # 2. Comment Length Analysis
         st.header("Comment Length Analysis")
@@ -457,6 +459,120 @@ def graph(df):
                     st.dataframe(top_words)
         else:
             st.write("Not enough non-empty comments for clustering visualization.")
+
+        # 5. Attribute Co-occurrence Network
+        st.header("Attribute Co-occurrence Network")
+
+        if len(selected_attributes) >= 3:
+            # Select the first three attributes
+            attrs = selected_attributes[:3]
+
+            # Create nodes (unique values from each attribute)
+            nodes = []
+            node_colors = []
+
+            for i, attr in enumerate(attrs):
+                for val in df[attr].unique():
+                    nodes.append(f"{attr}_{val}")
+                    node_colors.append(i)  # Color by attribute
+
+            # Create edges (co-occurrences)
+            edges = []
+            edge_weights = []
+
+            for i, attr1 in enumerate(attrs):
+                for j, attr2 in enumerate(attrs):
+                    if i < j:  # Avoid duplicates
+                        # Count co-occurrences
+                        co_occur = pd.crosstab(df[attr1], df[attr2])
+
+                        for val1 in co_occur.index:
+                            for val2 in co_occur.columns:
+                                weight = co_occur.loc[val1, val2]
+                                if weight > 0:
+                                    edges.append((f"{attr1}_{val1}", f"{attr2}_{val2}"))
+                                    edge_weights.append(weight)
+
+            # Create network graph
+            fig = go.Figure()
+
+            # Add edges
+            for i, (source, target) in enumerate(edges):
+                fig.add_trace(
+                    go.Scatter(
+                        x=[nodes.index(source), nodes.index(target)],
+                        y=[0, 0],
+                        mode='lines',
+                        line=dict(width=edge_weights[i] / max(edge_weights) * 10, color='gray'),
+                        showlegend=False
+                    )
+                )
+
+            # Add nodes
+            fig.add_trace(
+                go.Scatter(
+                    x=list(range(len(nodes))),
+                    y=[0] * len(nodes),
+                    mode='markers+text',
+                    marker=dict(
+                        size=15,
+                        color=node_colors,
+                        colorscale='Viridis',
+                    ),
+                    text=nodes,
+                    textposition='top center',
+                    showlegend=False
+                )
+            )
+
+            fig.update_layout(
+                title='Attribute Co-occurrence Network',
+                xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
+                height=600
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.write("Select at least three attributes to display the co-occurrence network.")
+
+        # 6. Radar Chart for Attribute Distributions
+        st.header("Radar Chart for Attribute Distributions")
+
+        if len(selected_attributes) >= 3:
+            # Prepare data for radar chart
+            categories = selected_attributes
+
+            # Calculate percentage of non-zero values for each attribute
+            values = []
+            for attr in categories:
+                non_zero = (df[attr] != '0').sum() / len(df)
+                values.append(non_zero * 100)
+
+            # Create radar chart
+            fig = go.Figure()
+
+            fig.add_trace(go.Scatterpolar(
+                r=values,
+                theta=categories,
+                fill='toself',
+                name='Attribute Distribution'
+            ))
+
+            fig.update_layout(
+                polar=dict(
+                    radialaxis=dict(
+                        visible=True,
+                        range=[0, 100]
+                    )
+                ),
+                title='Percentage of Non-Zero Values by Attribute',
+                showlegend=False
+            )
+
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.write("Select at least three attributes to display the radar chart.")
 
 
 

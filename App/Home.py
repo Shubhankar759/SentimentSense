@@ -65,24 +65,24 @@ def home():
         
     with tab2:
         
-        option = st.selectbox(
-            "Social Media",
-            [None,"Reddit"],
-            format_func=lambda x: "Select a Social Media Platform" if x is None else x
-        )
+        # option = st.selectbox(
+        #     "Social Media",
+        #     [None,"Reddit"],
+        #     format_func=lambda x: "Select a Social Media Platform" if x is None else x
+        # )
 
-        user_input = st.text_input("Enter your Link of Social Media")
+        # user_input = st.text_input("Enter your Link of Social Media")
         
-        num_comments = st.slider(label="Choose a value:",min_value=20,max_value=100,value=50)
+        # num_comments = st.slider(label="Choose a value:",min_value=20,max_value=100,value=50)
 
-        if st.button("Get Comments & Start Analysis"):
-            if option =='Reddit': 
+        # if st.button("Get Comments & Start Analysis"):
+        #     if option =='Reddit': 
                 
-                df = reddit_comment_extractor(user_input)
-                df.to_csv("comments.csv", index=False)
-                if df.empty: st.error("Insert URL of Post")
+        #         df = reddit_comment_extractor(user_input)
+        #         df.to_csv("comments.csv", index=False)
+        #         if df.empty: st.error("Insert URL of Post")
             
-            st.session_state.Main = "Dashboard"  
+        #     st.session_state.Main = "Dashboard"  
         
-        # st.caption("Facing Issues in Deployment Phase")
+        st.caption("Facing Issues in Deployment Phase")
 
